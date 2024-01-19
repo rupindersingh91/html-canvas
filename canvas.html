@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Canvas Drawing with Brush Size and Color Dropdowns</title>
+    <title>Canvas Drawing with Shapes</title>
     <style>
       canvas {
         border: 1px solid #000;
@@ -22,6 +22,14 @@
     <label for="brushColor">Brush Color:</label>
     <input type="color" id="brushColor" value="#000000" />
 
+    <label for="shape">Shape:</label>
+    <select id="shape">
+      <option value="freehand" selected>Freehand</option>
+      <option value="circle">Circle</option>
+      <option value="square">Square</option>
+      <option value="arrow">Arrow</option>
+    </select>
+
     <canvas id="myCanvas" width="400" height="400"></canvas>
 
     <script>
@@ -31,9 +39,11 @@
 
       var brushSizeSelect = document.getElementById("brushSize");
       var brushColorInput = document.getElementById("brushColor");
+      var shapeSelect = document.getElementById("shape");
 
       var brushSize = brushSizeSelect.value;
       var brushColor = brushColorInput.value;
+      var currentShape = shapeSelect.value;
 
       brushSizeSelect.addEventListener("change", function () {
         brushSize = brushSizeSelect.value;
@@ -41,6 +51,10 @@
 
       brushColorInput.addEventListener("input", function () {
         brushColor = brushColorInput.value;
+      });
+
+      shapeSelect.addEventListener("change", function () {
+        currentShape = shapeSelect.value;
       });
 
       canvas.addEventListener("mousedown", startPosition);
@@ -63,11 +77,68 @@
         ctx.lineWidth = brushSize;
         ctx.lineCap = "round";
         ctx.strokeStyle = brushColor;
+        ctx.fillStyle = brushColor;
 
-        ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-        ctx.stroke();
+        switch (currentShape) {
+          case "freehand":
+            ctx.lineTo(
+              e.clientX - canvas.offsetLeft,
+              e.clientY - canvas.offsetTop
+            );
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(
+              e.clientX - canvas.offsetLeft,
+              e.clientY - canvas.offsetTop
+            );
+            break;
+          case "circle":
+            var radius = brushSize / 2;
+            ctx.beginPath();
+            ctx.arc(
+              e.clientX - canvas.offsetLeft,
+              e.clientY - canvas.offsetTop,
+              radius,
+              0,
+              2 * Math.PI
+            );
+            ctx.stroke();
+            ctx.fill();
+            break;
+          case "square":
+            var side = brushSize;
+            ctx.fillRect(
+              e.clientX - canvas.offsetLeft - side / 2,
+              e.clientY - canvas.offsetTop - side / 2,
+              side,
+              side
+            );
+            ctx.strokeRect(
+              e.clientX - canvas.offsetLeft - side / 2,
+              e.clientY - canvas.offsetTop - side / 2,
+              side,
+              side
+            );
+            break;
+          case "arrow":
+            drawArrow(
+              e.clientX - canvas.offsetLeft,
+              e.clientY - canvas.offsetTop
+            );
+            break;
+        }
+      }
+
+      function drawArrow(x, y) {
+        var arrowSize = 20;
+
         ctx.beginPath();
-        ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        ctx.moveTo(x - arrowSize / 2, y);
+        ctx.lineTo(x + arrowSize / 2, y);
+        ctx.lineTo(x, y - arrowSize);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
       }
     </script>
   </body>

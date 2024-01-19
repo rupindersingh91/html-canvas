@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Canvas Drawing with Brush Size Dropdown</title>
+    <title>Canvas Drawing with Brush Size and Color Dropdowns</title>
     <style>
       canvas {
         border: 1px solid #000;
@@ -19,6 +19,9 @@
       <option value="20">20</option>
     </select>
 
+    <label for="brushColor">Brush Color:</label>
+    <input type="color" id="brushColor" value="#000000" />
+
     <canvas id="myCanvas" width="400" height="400"></canvas>
 
     <script>
@@ -27,10 +30,17 @@
       var painting = false;
 
       var brushSizeSelect = document.getElementById("brushSize");
+      var brushColorInput = document.getElementById("brushColor");
+
       var brushSize = brushSizeSelect.value;
+      var brushColor = brushColorInput.value;
 
       brushSizeSelect.addEventListener("change", function () {
         brushSize = brushSizeSelect.value;
+      });
+
+      brushColorInput.addEventListener("input", function () {
+        brushColor = brushColorInput.value;
       });
 
       canvas.addEventListener("mousedown", startPosition);
@@ -52,7 +62,7 @@
 
         ctx.lineWidth = brushSize;
         ctx.lineCap = "round";
-        ctx.strokeStyle = "#000";
+        ctx.strokeStyle = brushColor;
 
         ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
         ctx.stroke();

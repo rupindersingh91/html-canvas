@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Canvas Drawing</title>
+    <title>Canvas Drawing with Brush Size Dropdown</title>
     <style>
       canvas {
         border: 1px solid #000;
@@ -11,17 +11,28 @@
     </style>
   </head>
   <body>
+    <label for="brushSize">Brush Size:</label>
+    <select id="brushSize">
+      <option value="2">2</option>
+      <option value="5" selected>5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+    </select>
+
     <canvas id="myCanvas" width="400" height="400"></canvas>
 
     <script>
-      // Get the canvas element and its context
       var canvas = document.getElementById("myCanvas");
       var ctx = canvas.getContext("2d");
-
-      // Variables to track mouse position
       var painting = false;
 
-      // Event listeners to track mouse actions
+      var brushSizeSelect = document.getElementById("brushSize");
+      var brushSize = brushSizeSelect.value;
+
+      brushSizeSelect.addEventListener("change", function () {
+        brushSize = brushSizeSelect.value;
+      });
+
       canvas.addEventListener("mousedown", startPosition);
       canvas.addEventListener("mouseup", endPosition);
       canvas.addEventListener("mousemove", draw);
@@ -33,18 +44,16 @@
 
       function endPosition() {
         painting = false;
-        ctx.beginPath(); // Reset the path
+        ctx.beginPath();
       }
 
       function draw(e) {
         if (!painting) return;
 
-        // Set line style
-        ctx.lineWidth = 5;
+        ctx.lineWidth = brushSize;
         ctx.lineCap = "round";
-        ctx.strokeStyle = "#000"; // Black color
+        ctx.strokeStyle = "#000";
 
-        // Draw line
         ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
         ctx.stroke();
         ctx.beginPath();

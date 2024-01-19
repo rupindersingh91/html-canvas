@@ -93,26 +93,44 @@
       canvas.addEventListener("mouseup", endPosition);
       canvas.addEventListener("mousemove", draw);
 
+      /**
+       * Set the painting flag to true and call the draw function with the event object
+       * @param {Event} e - The event object
+       */
       function startPosition(e) {
         painting = true;
         draw(e);
       }
 
+      /**
+       * Sets the `painting` flag to `false` and begins a new path on the canvas context.
+       */
       function endPosition() {
+        // Set the `painting` flag to `false`
         painting = false;
+
+        // Begin a new path on the canvas context
         ctx.beginPath();
       }
 
+      /**
+       * Handles the drawing action based on the user's input event.
+       * @param {Event} e - The input event.
+       */
       function draw(e) {
+        // Exit the function if not in painting mode
         if (!painting) return;
 
+        // Set the brush properties
         ctx.lineWidth = brushSize;
         ctx.lineCap = "round";
         ctx.strokeStyle = brushColor;
         ctx.fillStyle = brushColor;
 
+        // Draw based on the current shape
         switch (currentShape) {
           case "freehand":
+            // Draw a line
             ctx.lineTo(
               e.clientX - canvas.offsetLeft,
               e.clientY - canvas.offsetTop
@@ -125,6 +143,7 @@
             );
             break;
           case "circle":
+            // Draw a circle
             var radius = brushSize / 2;
             ctx.beginPath();
             ctx.arc(
@@ -138,6 +157,7 @@
             ctx.fill();
             break;
           case "square":
+            // Draw a square
             var side = brushSize;
             ctx.fillRect(
               e.clientX - canvas.offsetLeft - side / 2,
@@ -153,6 +173,7 @@
             );
             break;
           case "arrow":
+            // Draw an arrow
             drawArrow(
               e.clientX - canvas.offsetLeft,
               e.clientY - canvas.offsetTop
@@ -161,6 +182,11 @@
         }
       }
 
+      /**
+       * Draws an arrow at the specified coordinates.
+       * @param {number} x - The x-coordinate of the arrow.
+       * @param {number} y - The y-coordinate of the arrow.
+       */
       function drawArrow(x, y) {
         var arrowSize = 20;
 
@@ -173,7 +199,12 @@
         ctx.fill();
       }
 
-      function clearCanvas() {
+      /**
+       * Clears the canvas.
+       * @param {object} ctx - The canvas rendering context.
+       * @param {object} canvas - The canvas element.
+       */
+      function clearCanvas(ctx, canvas) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     </script>
